@@ -1,8 +1,7 @@
 from rich.console import Console
 import random
 from srl.commands.list_ import get_due_problems
-from srl.storage import load_json, PROGRESS_FILE, MASTERED_FILE, NEXT_UP_FILE
-
+import srl.storage as storage
 
 def add_subparser(subparsers):
     parser = subparsers.add_parser(
@@ -22,9 +21,9 @@ def add_subparser(subparsers):
 def handle(args, console: Console):
     # If --all requested, aggregate from all storage files (progress, mastered, next_up)
     if getattr(args, "all", False):
-        progress = load_json(PROGRESS_FILE)
-        mastered = load_json(MASTERED_FILE)
-        next_up = load_json(NEXT_UP_FILE)
+        progress = storage.load_json(storage.PROGRESS_FILE)
+        mastered = storage.load_json(storage.MASTERED_FILE)
+        next_up = storage.load_json(storage.NEXT_UP_FILE)
 
         names = set()
         if isinstance(progress, dict):

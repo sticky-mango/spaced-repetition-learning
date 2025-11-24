@@ -1,10 +1,6 @@
 from rich.console import Console
 from rich.panel import Panel
-from srl.storage import (
-    load_json,
-    PROGRESS_FILE,
-)
-
+import srl.storage as storage
 
 def add_subparser(subparsers):
     parser = subparsers.add_parser("inprogress", help="List problems in progress")
@@ -28,7 +24,7 @@ def handle(args, console: Console):
 
 
 def get_in_progress() -> list[str]:
-    data = load_json(PROGRESS_FILE)
+    data = storage.load_json(storage.PROGRESS_FILE)
     res = []
 
     for name, _ in data.items():

@@ -1,10 +1,5 @@
 from rich.console import Console
-from srl.storage import (
-    load_json,
-    save_json,
-    CONFIG_FILE,
-)
-
+import srl.storage as storage
 
 def add_subparser(subparsers):
     parser = subparsers.add_parser("config", help="Update configuration values")
@@ -20,7 +15,7 @@ def add_subparser(subparsers):
 
 def handle(args, console: Console):
     if args.get:
-        config = load_json(CONFIG_FILE)
+        config = storage.load_json(storage.CONFIG_FILE)
         console.print_json(data=config)
     else:
         probability: float | None = args.audit_probability
@@ -29,7 +24,7 @@ def handle(args, console: Console):
             console.print("[yellow]Invalid configuration option provided.[/yellow]")
             return
 
-        config = load_json(CONFIG_FILE)
+        config = storage.load_json(storage.CONFIG_FILE)
         config["audit_probability"] = probability
-        save_json(CONFIG_FILE, config)
+        storage.save_json(storage.CONFIG_FILE, config)
         console.print(f"Audit probability set to [cyan]{probability}[/cyan]")
