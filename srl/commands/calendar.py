@@ -3,13 +3,7 @@ from collections import Counter
 from pathlib import Path
 from datetime import date, timedelta
 from rich.table import Table
-from srl.storage import (
-    load_json,
-    MASTERED_FILE,
-    PROGRESS_FILE,
-    AUDIT_FILE,
-)
-
+import srl.storage as storage
 
 def add_subparser(subparsers):
     parser = subparsers.add_parser("calendar", help="Graph of SRL activity")
@@ -102,15 +96,15 @@ def key(d: date) -> str:
 
 def get_all_date_counts() -> Counter[str]:
     counts = Counter()
-    counts.update(get_dates(MASTERED_FILE))
-    counts.update(get_dates(PROGRESS_FILE))
+    counts.update(get_dates(storage.MASTERED_FILE))
+    counts.update(get_dates(storage.PROGRESS_FILE))
     counts.update(get_audit_dates())
 
     return counts
 
 
 def get_dates(path: Path) -> list[str]:
-    json_data = load_json(path)
+    json_data = storage.load_json(path)
     res = []
 
     for obj in json_data.values():
@@ -126,7 +120,7 @@ def get_dates(path: Path) -> list[str]:
 
 
 def get_audit_dates() -> list[str]:
-    audit_data = load_json(AUDIT_FILE)
+    audit_data = storage.load_json(storage.AUDIT_FILE)
     history = audit_data.get("history", [])
     res = []
 

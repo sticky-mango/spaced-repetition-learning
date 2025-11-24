@@ -1,14 +1,7 @@
 from rich.console import Console
 from rich.panel import Panel
 from srl.utils import today
-from srl.storage import (
-    load_json,
-    save_json,
-    NEXT_UP_FILE,
-    PROGRESS_FILE,
-    MASTERED_FILE,
-)
-
+import srl.storage as storage
 
 def add_subparser(subparsers):
     parser = subparsers.add_parser("nextup", help="Next up problem queue")
@@ -102,9 +95,9 @@ def add_to_next_up(name, console, allow_mastered=False) -> bool:
     Add a problem to Next Up queue if not already present, in progress, or mastered.
     Returns True if added, False otherwise.
     """
-    next_up = load_json(NEXT_UP_FILE)
-    in_progress = load_json(PROGRESS_FILE)
-    mastered = load_json(MASTERED_FILE)
+    next_up = storage.load_json(storage.NEXT_UP_FILE)
+    in_progress = storage.load_json(storage.PROGRESS_FILE)
+    mastered = stoarage.load_json(storage.MASTERED_FILE)
 
     if name in next_up:
         console.print(f'[yellow]"{name}" is already in the Next Up queue.[/yellow]')
@@ -124,12 +117,12 @@ def add_to_next_up(name, console, allow_mastered=False) -> bool:
             return False
 
     next_up[name] = {"added": today().isoformat()}
-    save_json(NEXT_UP_FILE, next_up)
+    storage.save_json(storage.NEXT_UP_FILE, next_up)
     return True
 
 
 def get_next_up_problems() -> list[str]:
-    data = load_json(NEXT_UP_FILE)
+    data = storage.load_json(storage.NEXT_UP_FILE)
     res = []
 
     for name in data.keys():
@@ -139,17 +132,17 @@ def get_next_up_problems() -> list[str]:
 
 
 def remove_from_next_up(name: str, console: Console):
-    data = load_json(NEXT_UP_FILE)
+    data = storage.load_json(storage.NEXT_UP_FILE)
 
     if name not in data:
         console.print(f'[yellow]"{name}" not found in the Next Up queue.[/yellow]')
         return
 
     del data[name]
-    save_json(NEXT_UP_FILE, data)
+    storage.save_json(storage.NEXT_UP_FILE, data)
     console.print(f"[green]Removed[/green] [bold]{name}[/bold] from Next Up Queue")
 
 
 def clear_next_up(console: Console):
-    save_json(NEXT_UP_FILE, {})
+    storage.save_json(storage.NEXT_UP_FILE, {})
     console.print("[green]Next Up queue cleared.[/green]")

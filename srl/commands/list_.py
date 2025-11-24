@@ -4,13 +4,7 @@ from srl.utils import today
 from srl.commands.audit import get_current_audit, random_audit
 from datetime import datetime, timedelta
 import random
-from srl.storage import (
-    load_json,
-    NEXT_UP_FILE,
-    CONFIG_FILE,
-    PROGRESS_FILE,
-)
-
+import srl.storage as storage
 
 def add_subparser(subparsers):
     parser = subparsers.add_parser("list", help="List due problems")
@@ -45,7 +39,7 @@ def handle(args, console: Console):
 
 
 def should_audit():
-    config = load_json(CONFIG_FILE)
+    config = storage.load_json(storage.CONFIG_FILE)
     probability = config.get("audit_probability", 0.1)
     try:
         probability = float(probability)
@@ -54,8 +48,8 @@ def should_audit():
     return random.random() < probability
 
 
-def get_due_problems(limit=None) -> list[str]:
-    data = load_json(PROGRESS_FILE)
+def get_due_problems(limit = None) -> list[str]:
+    data = storage.load_json(storage.PROGRESS_FILE)
     due = []
 
     for name, info in data.items():
@@ -73,7 +67,7 @@ def get_due_problems(limit=None) -> list[str]:
     due_names = [name for name, _, _ in (due[:limit] if limit else due)]
 
     if not due_names:
-        next_up = load_json(NEXT_UP_FILE)
+        next_up = storage.load_json(storage.NEXT_UP_FILE)
         fallback = list(next_up.keys())[: limit or 3]
         return fallback
 

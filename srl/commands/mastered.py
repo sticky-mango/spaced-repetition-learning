@@ -1,10 +1,6 @@
 from rich.console import Console
 from rich.table import Table
-from srl.storage import (
-    load_json,
-    MASTERED_FILE,
-)
-
+import srl.storage as storage
 
 def add_subparser(subparsers):
     parser = subparsers.add_parser("mastered", help="List mastered problems")
@@ -38,7 +34,7 @@ def handle(args, console: Console):
 
 
 def get_mastered_problems():
-    data = load_json(MASTERED_FILE)
+    data = storage.load_json(storage.MASTERED_FILE)
     mastered = []
 
     for name, info in data.items():
