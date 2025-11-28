@@ -1,6 +1,7 @@
 from rich.console import Console
 from srl.utils import today
 import random
+from srl.stoage import load_json, save_json
 import srl.storage as storage
 
 
@@ -53,12 +54,12 @@ def handle(args, console: Console):
 
 
 def get_current_audit():
-    data = storage.load_json(storage.AUDIT_FILE)
+    data = load_json(storage.AUDIT_FILE)
     return data.get("current_audit")
 
 
 def log_audit_attempt(problem, result):
-    audit_data = storage.load_json(storage.AUDIT_FILE)
+    audit_data = load_json(storage.AUDIT_FILE)
     if "history" not in audit_data:
         audit_data["history"] = []
 
@@ -72,7 +73,7 @@ def log_audit_attempt(problem, result):
 
     audit_data.pop("current_audit", None)
 
-    storage.save_json(storage.AUDIT_FILE, audit_data)
+    save_json(storage.AUDIT_FILE, audit_data)
 
 
 def audit_pass(curr):
@@ -80,8 +81,8 @@ def audit_pass(curr):
 
 
 def audit_fail(curr, console: Console):
-    mastered = storage.load_json(storage.MASTERED_FILE)
-    progress = storage.load_json(storage.PROGRESS_FILE)
+    mastered = load_json(storage.MASTERED_FILE)
+    progress = load_json(storage.PROGRESS_FILE)
 
     if curr not in mastered:
         console.print(f"[red]{curr}[/red] not found in mastered.")
@@ -98,22 +99,22 @@ def audit_fail(curr, console: Console):
 
     # Move to progress
     progress[curr] = entry
-    storage.save_json(storage.PROGRESS_FILE, progress)
+    save_json(storage.PROGRESS_FILE, progress)
 
     # Remove from mastered
     del mastered[curr]
-    storage.save_json(storage.MASTERED_FILE, mastered)
+    save_json(storage.MASTERED_FILE, mastered)
 
     log_audit_attempt(curr, "fail")
 
 
 def random_audit():
-    data_mastered = storage.load_json(storage.MASTERED_FILE)
+    data_mastered = load_json(storage.MASTERED_FILE)
     mastered = list(data_mastered)
     if not mastered:
         return None
     problem: str = random.choice(mastered)
-    audit_data = storage.load_json(storage.AUDIT_FILE)
+    audit_data = load_json(storage.AUDIT_FILE)
     audit_data["current_audit"] = problem
-    storage.save_json(storage.AUDIT_FILE, audit_data)
+    save_json(storage.AUDIT_FILE, audit_data)
     return problem
