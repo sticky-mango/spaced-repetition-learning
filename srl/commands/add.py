@@ -1,3 +1,4 @@
+import argparse
 from rich.console import Console
 from srl.utils import today
 from srl.storage import load_json, save_json
@@ -5,18 +6,22 @@ import srl.storage as storage
 
 
 def add_subparser(subparsers):
-    add = subparsers.add_parser("add", help="Add or update a problem attempt")
+    add = subparsers.add_parser(
+        "add",
+        help="Add or update a problem attempt",
+        formatter_class=argparse.RawTextHelpFormatter,
+    )
     add.add_argument("name", type=str, help="Name of the LeetCode problem")
     add.add_argument(
         "rating",
         type=int,
         choices=range(1, 6),
-        help="Rating from 1-5: "
-        "1=Couldn't solve/needed solution,"
-        "2=Solved with significant struggle,"
-        "3=Solved with minor struggle,"
-        "4=Solved smoothly with few gaps,"
-        "5=Solved perfectly, confidently",
+        help="Rating from 1-5:\n"
+        "1 = Couldn't solve/needed solution\n"
+        "2 = Solved with significant struggle\n"
+        "3 = Solved with minor struggle\n"
+        "4 = Solved smoothly with few gaps\n"
+        "5 = Solved perfectly, confidently\n"
     )
     add.add_argument("-m", type=str, help="Optional message/note about the attempt")
     add.set_defaults(handler=handle)

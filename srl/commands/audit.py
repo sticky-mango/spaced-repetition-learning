@@ -1,7 +1,7 @@
 from rich.console import Console
 from srl.utils import today
 import random
-from srl.stoage import load_json, save_json
+from srl.storage import load_json, save_json
 import srl.storage as storage
 
 
