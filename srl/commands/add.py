@@ -31,7 +31,6 @@ def add_subparser(subparsers):
 def handle(args, console: Console):
     name: str = args.name
     rating: int = args.rating
-    message: str = args.m
 
     data = load_json(storage.PROGRESS_FILE)
 
@@ -42,8 +41,13 @@ def handle(args, console: Console):
             "date": today().isoformat(),
         }
     )
-    if message:
-        entry["message"] = message
+
+    # Validate and add message if provided
+    if args.m is not None:
+        if not args.m.strip():
+            console.print("[yellow]Warning: -m flag used but message is empty[/yellow]")
+        else:
+            entry["message"] = args.m
 
     # Mastery check: last two ratings are 5
     history = entry["history"]

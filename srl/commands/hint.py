@@ -15,7 +15,11 @@ def handle(args, console: Console):
     # Load data from both files
     data = storage.load_json(storage.PROGRESS_FILE)
     mastered = storage.load_json(storage.MASTERED_FILE)
-
+    
+    if args.name and args.all:
+        console.print("[red]Incorrect usage. Please provide just a problem name or use -all flag[/red]")
+        return
+    
     # If -all flag is used, show all hints
     if args.all:
         hints = []
