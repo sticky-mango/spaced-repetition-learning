@@ -8,6 +8,9 @@ venv/
 env/
 .venv/
 
+# Build Files
+build/
+
 # IDE or editor-specific files
 .vscode/
 .idea/
