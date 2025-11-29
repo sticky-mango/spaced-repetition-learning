@@ -6,6 +6,10 @@ __pycache__/
 # Virtual environment
 venv/
 env/
+.venv/
+
+# Build Files
+build/
 
 # IDE or editor-specific files
 .vscode/
